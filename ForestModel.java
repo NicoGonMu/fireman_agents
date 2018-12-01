@@ -3,24 +3,40 @@ import jason.environment.grid.Location;
 
 /** class that implements the Model of Domestic Robot application */
 public class ForestModel extends GridWorldModel {
-  
-  // constants for the grid objects
-  public static final int FRIDGE = 16;
-  public static final int OWNER  = 32;
 
   // the grid size
   public static final int GSize = 10;
+  
+  ///////////////BEER VARS/////////////////////////
+  // constants for the grid objects
+  public static final int FRIDGE = 16;
+  public static final int OWNER  = 32;
   
   boolean fridgeOpen   = false; // whether the fridge is open
   boolean carryingBeer = false; // whether the robot is carrying beer
   int sipCount     = 0; // how many sip the owner did
   int availableBeers = 2; // how many beers are available
-
+  
   Location lFridge = new Location(0,0);
   Location lOwner  = new Location(GSize-1,GSize-1);
+  ///////////////////////////////////////////////
+  
+  
+  // Problem variables
+  int availableWater = 1000; // How much available water
+  boolean carryingWater = false;  // Wheter the plain is carrying water
+  boolean carryingVictim = false; // Wheter the fireman is carrying a victim
+  
+  // Map description
+  public static enum FireType { NONE, LIGHT, HEAVY }
+  public class Cell { 
+	  FireType fireType;
+	  int numVictims;
+  }
+  public Cell[][] mapDescription = new Cell[GSize][GSize];
 
   public ForestModel() {
-    // create a 7x7 grid with one mobile agent
+    // create a DSize x GSize grid with one mobile agent
     super(GSize, GSize, 1);
 
     // initial location of robot (column 3, line 3)
@@ -30,6 +46,17 @@ public class ForestModel extends GridWorldModel {
     // initial location of fridge and owner
     add(FRIDGE, lFridge);
     add(OWNER, lOwner);
+	
+	// Initialize map description
+	for(int i = 0; i < GSize; i++) {
+		for(int j = 0; j < GSize; j++) {
+			mapDescription[i][j] = new Cell() {{ fireType = FireType.NONE; numVictims = 0; }};
+		}
+	}
+	
+	// Set fire types and number of victims per cell
+	mapDescription[2][3].fireType = FireType.HEAVY;
+	mapDescription[2][3].numVictims = 2;
   }
 
   boolean openFridge() {
@@ -100,5 +127,69 @@ public class ForestModel extends GridWorldModel {
     } else {
       return false;
     }
+  }
+  
+  boolean go(Location dest) {
+    Location r1 = getAgPos(0);
+    if (r1.x < dest.x)    r1.x++;
+    else if (r1.x > dest.x)   r1.x--;
+    if (r1.y < dest.y)    r1.y++;
+    else if (r1.y > dest.y)   r1.y--;
+    setAgPos(0, r1); // move the robot in the grid
+        
+    // repaint the fridge and owner locations
+    view.update(lFridge.x,lFridge.y);
+    view.update(lOwner.x,lOwner.y);
+    return true;
+  }
+  boolean loadWater() {
+	if (availableWater > 99 && !carryingWater) {
+      availableWater -= 100;
+      carryingWater = true;
+      view.update(lFridge.x,lFridge.y);
+      return true;
+    } else {
+      return false;
+    }
+  }
+  boolean downloadWater() {
+    if (carryingWater) {
+      carryingWater = false;
+	  Location r1 = getAgPos(0);
+	  mapDescription[r1.x][r1.y].fireType = FireType.NONE;
+      view.update(lOwner.x,lOwner.y);
+      return true;
+    } else {
+      return false;
+    }
+  }
+  boolean loadVictim() {
+    if (!carryingVictim) {
+	  Location r1 = getAgPos(0);
+	  mapDescription[r1.x][r1.y].numVictims -= 1;
+	  carryingVictim = true;
+	  return true;
+	} else {
+	  return false;
+	}
+  }
+  boolean downloadVictim() {
+    Location r1 = getAgPos(0);
+    if (carryingVictim && mapDescription[r1.x][r1.y].fireType == FireType.NONE) {
+	  mapDescription[r1.x][r1.y].numVictims -= 1;
+	  carryingVictim = false;
+	  return true;
+	} else {
+	  return false;
+	}
+  }
+  boolean extinguishFire() {
+    Location r1 = getAgPos(0);
+    if (mapDescription[r1.x][r1.y].fireType == FireType.LIGHT) {
+	  mapDescription[r1.x][r1.y].fireType = FireType.NONE;
+	  return true;
+	} else {
+	  return false;
+	}
   }
 }

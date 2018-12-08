@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 public class ForestEnv extends Environment {
 
   // common literals
+  ///////////////////////BEER LITERALS//////////////////////
   public static final Literal of  = Literal.parseLiteral("open(fridge)");
   public static final Literal clf = Literal.parseLiteral("close(fridge)");
   public static final Literal gb  = Literal.parseLiteral("get(beer)");
@@ -15,7 +16,14 @@ public class ForestEnv extends Environment {
 
   public static final Literal af = Literal.parseLiteral("at(robot,fridge)");
   public static final Literal ao = Literal.parseLiteral("at(robot,owner)");
-
+  /////////////////////////////////////////////////////////
+  
+  public static final Literal lw = Literal.parseLiteral("load(water)");
+  public static final Literal dw = Literal.parseLiteral("download(water)");
+  public static final Literal lv = Literal.parseLiteral("load(victim)");
+  public static final Literal dv = Literal.parseLiteral("download(victim)");
+  public static final Literal ef = Literal.parseLiteral("extinguish(fire)");
+  
   ForestModel model; // the model of the grid
 
   @Override
@@ -33,27 +41,27 @@ public class ForestEnv extends Environment {
   /** creates the agents percepts based on the HouseModel */
   void updatePercepts() {
     // clear the percepts of the agents
-    clearPercepts("robot");
-    clearPercepts("owner");
+    clearPercepts("plane");
+    clearPercepts("fireman");
     
     // get the robot location
     Location lRobot = model.getAgPos(0);
 
     // add agent location to its percepts
     if (lRobot.equals(model.lFridge)) {
-      addPercept("robot", af);
+      addPercept("plane", af);
     }
-    if (lRobot.equals(model.lOwner)) {
-      addPercept("robot", ao);
+    if (lRobot.equals(model.lFireman)) {
+      addPercept("plane", ao);
     }
     
     // add beer "status" to the percepts
     if (model.fridgeOpen) {
-      addPercept("robot", Literal.parseLiteral("stock(beer,"+model.availableBeers+")"));
+      addPercept("plane", Literal.parseLiteral("stock(beer,"+model.availableBeers+")"));
     }
     if (model.sipCount > 0) {
-      addPercept("robot", hob);
-      addPercept("owner", hob);
+      addPercept("plane", hob);
+      addPercept("fireman", hob);
     }
   }
 
@@ -72,8 +80,8 @@ public class ForestEnv extends Environment {
       Location dest = null;
       if (l.equals("fridge")) {
         dest = model.lFridge;
-      } else if (l.equals("owner")) {
-        dest = model.lOwner;
+      } else if (l.equals("fireman")) {
+        dest = model.lFireman;
       }
 
       try {

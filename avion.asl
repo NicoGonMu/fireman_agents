@@ -4,7 +4,7 @@
 available(beer,fridge).
 
 // my owner should not consume more than 10 beers a day :-)
-limit(beer,10). 
+limit(beer,10).
 
 /* Rules */ 
 
@@ -44,12 +44,29 @@ too_much(B) :-
               " beers a day! I am very sorry about that!",M);
       .send(owner,tell,msg(M)).    
 
+@h4
++!load_water(plane)
+   : not carrying_water(plane)
+   <- carrying_water(plane);
+      !download_water(plane).
+
+@h5
++!download_water(plane, P)
+   : not carrying_water(plane)
+   <- !load_water(plane).
+   
+@h6
++!download_water(plane, P)
+   : carrying_water(plane)
+   <- !at(plane, P); 
+      not carrying_water(plane).
+	  
 @m1
-+!at(robot,P) : at(robot,P) <- true.
++!at(plane,P) : at(plane,P) <- true.
 @m2
-+!at(robot,P) : not at(robot,P)
++!at(plane,P) : not at(plane,P)
   <- move_towards(P);
-     !at(robot,P).
+     !at(plane,P).
 
 // when the supermarket makes a delivery, try the 'has' 
 // goal again   
@@ -69,3 +86,8 @@ too_much(B) :-
 +stock(beer,N) 
    :  N > 0 & not available(beer,fridge)
    <- +available(beer,fridge).
+   
+@a4
++alert_sent(P)[source(fireman)] : true
+  <- +fire(P);
+     !download(plane,P). 

@@ -9,8 +9,8 @@ public class ForestModel extends GridWorldModel {
   
   ///////////////BEER VARS/////////////////////////
   // constants for the grid objects
-  public static final int FRIDGE = 16;
-  public static final int OWNER  = 32;
+  //public static final int FRIDGE = 16;
+  //public static final int OWNER  = 32;
   
   boolean fridgeOpen   = false; // whether the fridge is open
   boolean carryingBeer = false; // whether the robot is carrying beer
@@ -18,14 +18,19 @@ public class ForestModel extends GridWorldModel {
   int availableBeers = 2; // how many beers are available
   
   Location lFridge = new Location(0,0);
-  Location lOwner  = new Location(GSize-1,GSize-1);
+  //Location lOwner  = new Location(GSize-1,GSize-1);
   ///////////////////////////////////////////////
   
   
   // Problem variables
+  public static final int FRIDGE = 16;
+  public static final int FIREMAN  = 32;
+  
   int availableWater = 1000; // How much available water
   boolean carryingWater = false;  // Wheter the plain is carrying water
   boolean carryingVictim = false; // Wheter the fireman is carrying a victim
+  
+  Location lFireman  = new Location(GSize-1,GSize-1);
   
   // Map description
   public static enum FireType { NONE, LIGHT, HEAVY }
@@ -39,13 +44,13 @@ public class ForestModel extends GridWorldModel {
     // create a DSize x GSize grid with one mobile agent
     super(GSize, GSize, 1);
 
-    // initial location of robot (column 3, line 3)
-    // ag code 0 means the robot
+    // initial location of plane (column 3, line 3)
+    // ag code 0 means the plane
     setAgPos(0, GSize/2, GSize/2);
     
     // initial location of fridge and owner
     add(FRIDGE, lFridge);
-    add(OWNER, lOwner);
+    add(FIREMAN, lFireman);
 	
 	// Initialize map description
 	for(int i = 0; i < GSize; i++) {
@@ -87,7 +92,7 @@ public class ForestModel extends GridWorldModel {
         
     // repaint the fridge and owner locations
     view.update(lFridge.x,lFridge.y);
-    view.update(lOwner.x,lOwner.y);
+    view.update(lFireman.x,lFireman.y);
     return true;
   }
   
@@ -112,7 +117,7 @@ public class ForestModel extends GridWorldModel {
     if (carryingBeer) {
       sipCount = 10;
       carryingBeer = false;
-      view.update(lOwner.x,lOwner.y);
+      view.update(lFireman.x,lFireman.y);
       return true;
     } else {
       return false;
@@ -122,7 +127,7 @@ public class ForestModel extends GridWorldModel {
   boolean sipBeer() {
     if (sipCount > 0) {
       sipCount--;
-      view.update(lOwner.x,lOwner.y);
+      view.update(lFireman.x,lFireman.y);
       return true;
     } else {
       return false;
@@ -139,7 +144,7 @@ public class ForestModel extends GridWorldModel {
         
     // repaint the fridge and owner locations
     view.update(lFridge.x,lFridge.y);
-    view.update(lOwner.x,lOwner.y);
+    view.update(lFireman.x,lFireman.y);
     return true;
   }
   boolean loadWater() {
@@ -157,7 +162,7 @@ public class ForestModel extends GridWorldModel {
       carryingWater = false;
 	  Location r1 = getAgPos(0);
 	  mapDescription[r1.x][r1.y].fireType = FireType.NONE;
-      view.update(lOwner.x,lOwner.y);
+      view.update(lFireman.x,lFireman.y);
       return true;
     } else {
       return false;

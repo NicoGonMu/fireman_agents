@@ -10,7 +10,7 @@ public class ForestView extends GridWorldView {
   ForestModel fmodel;
     
   public ForestView(ForestModel model) {
-    super(model, "Domestic Robot", 700);
+    super(model, "Fireman", 700);
     fmodel = model;
     defaultFont = new Font("Arial", Font.BOLD, 16); // change default font
     setVisible(true);
@@ -20,21 +20,21 @@ public class ForestView extends GridWorldView {
   /** draw application objects */
   @Override
   public void draw(Graphics g, int x, int y, int object) {
-    Location lRobot = fmodel.getAgPos(0);
+    Location lPlane = fmodel.getAgPos(0);
     super.drawAgent(g, x, y, Color.lightGray, -1);
     switch (object) {
-      case ForestModel.FRIDGE: 
-        if (lRobot.equals(fmodel.lFridge)) {
+      case ForestModel.FRIDGE:
+        if (lPlane.equals(fmodel.lFridge)) {
           super.drawAgent(g, x, y, Color.yellow, -1);
         }
         g.setColor(Color.black);
         drawString(g, x, y, defaultFont, "Fridge ("+fmodel.availableBeers+")");  
         break;
-      case ForestModel.OWNER:
-        if (lRobot.equals(fmodel.lOwner)) {
+      case ForestModel.FIREMAN:
+        if (lPlane.equals(fmodel.lFireman)) {
           super.drawAgent(g, x, y, Color.yellow, -1);
         }
-        String o = "Owner";
+        String o = "Fireman";
         if (fmodel.sipCount > 0) {
           o +=  " ("+fmodel.sipCount+")";
         }
@@ -46,13 +46,13 @@ public class ForestView extends GridWorldView {
 
   @Override
   public void drawAgent(Graphics g, int x, int y, Color c, int id) {
-    Location lRobot = fmodel.getAgPos(0);
-    if (!lRobot.equals(fmodel.lOwner) && !lRobot.equals(fmodel.lFridge)) {
+    Location lPlane = fmodel.getAgPos(0);
+    if (!lPlane.equals(fmodel.lFireman) && !lPlane.equals(fmodel.lFridge)) {
       c = Color.yellow;
       if (fmodel.carryingBeer) c = Color.orange;
       super.drawAgent(g, x, y, c, -1);
       g.setColor(Color.black);
-      super.drawString(g, x, y, defaultFont, "Robot");
+      super.drawString(g, x, y, defaultFont, "Plane");
     }
   }
 }

@@ -2,9 +2,11 @@
 
 // initially, I believe that there is some beer in the fridge
 //available(beer,fridge).
+carrying_water(plane).
 
 // my owner should not consume more than 10 beers a day :-)
 //limit(beer,10).
+limit(lake, 1000).
 
 /* Rules */ 
 
@@ -47,7 +49,7 @@
 @h1
 +!load_water(plane)
    : not carrying_water(plane)
-   <- carrying_water(plane);
+   <- +carrying_water(plane);
       !download_water(plane).
 
 @h2
@@ -59,7 +61,7 @@
 +!download_water(plane, P)
    : carrying_water(plane)
    <- !at(plane, P); 
-      not carrying_water(plane).
+      -carrying_water(plane).
 	  
 @m1
 +!at(plane,P) : at(plane,P) <- true.
@@ -87,7 +89,7 @@
 //   :  N > 0 & not available(beer,fridge)
 //   <- +available(beer,fridge).
    
-@a4
+@a1
 +fire_detected(P)[source(fireman)] : true
   <- +fire(P);
      !download(plane,P). 

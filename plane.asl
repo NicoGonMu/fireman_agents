@@ -4,17 +4,16 @@
 //available(beer,fridge).
 carrying_water(plane).
 
-// my owner should not consume more than 10 beers a day :-)
-//limit(beer,10).
-limit(lake, 1000).
+// Lake only has 1000 liters a day (10 loads of 100L)
+limit(water, 10).
 
 /* Rules */ 
 
-//too_much(B) :- 
-//   .date(YY,MM,DD) &
-//   .count(consumed(YY,MM,DD,_,_,_,B),QtdB) &
-//   limit(B,Limit) &
-//   QtdB > Limit.
+too_much(B) :- 
+   .date(YY,MM,DD) &
+   .count(consumed(YY,MM,DD,_,_,_,B),QtdB) &
+   limit(B,Limit) &
+   QtdB > Limit.
 
    
 /* Plans */
@@ -50,14 +49,22 @@ limit(lake, 1000).
 +!load_water(plane)
    : not carrying_water(plane)
    <- +carrying_water(plane);
+      +consumed(YY,MM,DD,HH,NN,SS,water);
       !download_water(plane).
-
 @h2
++!load_water(plane)
+   : too_much(water) & limit(water,L)    
+   <- .concat("The Department of Health does not allow me ",
+              "to give you more than ", L,
+              " beers a day! I am very sorry about that!",M);
+      .send(fireman,tell,msg(M)).    
+@h3
 +!download_water(plane, P)
    : not carrying_water(plane)
-   <- !load_water(plane).
+   <- !load_water(plane);
+      !download_water(plane, P).
    
-@h3
+@h4
 +!download_water(plane, P)
    : carrying_water(plane)
    <- !at(plane, P);
@@ -92,5 +99,5 @@ limit(lake, 1000).
    
 @a1
 +fire_detected(P)[source(fireman)] : true
-  <- +fire(P);
-     !download(plane,P). 
+  <- !download_water(plane,P);
+     -fire_detected.

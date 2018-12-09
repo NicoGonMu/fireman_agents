@@ -4,7 +4,7 @@
 
 @g 
 +!get(beer) : true 
-   <- .send(robot, achieve, has(owner,beer)).
+   <- .send(avion, achieve, has(owner,beer)).
 
 @h1 
 +has(owner,beer) : true 

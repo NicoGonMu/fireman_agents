@@ -22,7 +22,7 @@ public class ForestEnv extends Environment {
   public static final Literal dw = Literal.parseLiteral("download(water)");
   public static final Literal lv = Literal.parseLiteral("load(victim)");
   public static final Literal dv = Literal.parseLiteral("download(victim)");
-  public static final Literal ef = Literal.parseLiteral("extinguish(fire)");
+  public static final Literal ex = Literal.parseLiteral("extinguish(fire)");
   
   ForestModel model; // the model of the grid
 
@@ -44,14 +44,17 @@ public class ForestEnv extends Environment {
     clearPercepts("plane");
     clearPercepts("fireman");
     
-    // get the robot location
-    Location lRobot = model.getAgPos(0);
+    // get the plane location
+    Location lPlane = model.getAgPos(0);
 
+    // get the fireman location
+    Location lFireman = model.getAgPos(1);
+	
     // add agent location to its percepts
-    if (lRobot.equals(model.lFridge)) {
+    if (lPlane.equals(model.lFridge)) {
       addPercept("plane", af);
     }
-    if (lRobot.equals(model.lFireman)) {
+    if (lPlane.equals(model.lFireman)) {
       addPercept("plane", ao);
     }
     
@@ -76,13 +79,7 @@ public class ForestEnv extends Environment {
       result = model.closeFridge();
       
     } else if (action.getFunctor().equals("move_towards")) {
-      String l = action.getTerm(0).toString();
-      Location dest = null;
-      if (l.equals("fridge")) {
-        dest = model.lFridge;
-      } else if (l.equals("fireman")) {
-        dest = model.lFireman;
-      }
+      Location dest = getDestination(action.getTerm(0).toString());
 
       try {
 	result = model.moveTowards(dest);
@@ -104,6 +101,21 @@ public class ForestEnv extends Environment {
       try { Thread.sleep(4000); } catch (Exception e) {}
       try { result = model.addBeer( (int)((NumberTerm)action.getTerm(1)).solve()); } catch (Exception e) {}
       
+    } else if (action.equals(ex)) {
+      Location dest = getDestination(action.getTerm(0).toString());
+
+      try {
+	    result = model.extinguish(dest);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      
+    } else if (action.equals(lv)) {
+      result = model.loadVictim();
+      
+    } else if (action.equals(dv)) {
+      result = model.downloadVictim();
+      
     } else {
       System.err.println("Failed to execute action "+action);
     }
@@ -113,5 +125,16 @@ public class ForestEnv extends Environment {
       try { Thread.sleep(100); } catch (Exception e) {}
     }
     return result;
+  }
+  
+  
+  Location getDestination(String target) {
+	  Location dest = null;
+      if (target.equals("plane")) {
+        dest = model.lPlane;
+      } else if (target.equals("fireman")) {
+        dest = model.lFireman;
+      }
+	  return dest;
   }
 }

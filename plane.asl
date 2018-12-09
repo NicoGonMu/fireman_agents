@@ -60,7 +60,8 @@ limit(lake, 1000).
 @h3
 +!download_water(plane, P)
    : carrying_water(plane)
-   <- !at(plane, P); 
+   <- !at(plane, P);
+      extinguish(P);
       -carrying_water(plane).
 	  
 @m1

@@ -31,6 +31,7 @@ public class ForestModel extends GridWorldModel {
   boolean carryingVictim = false; // Wheter the fireman is carrying a victim
   
   Location lFireman  = new Location(GSize-1,GSize-1);
+  Location lPlane    = new Location(GSize-1,GSize-1);
   
   // Map description
   public static enum FireType { NONE, LIGHT, HEAVY }
@@ -147,7 +148,7 @@ public class ForestModel extends GridWorldModel {
     view.update(lFireman.x,lFireman.y);
     return true;
   }
-  boolean loadWater() {
+/*  boolean loadWater() {
 	if (availableWater > 99 && !carryingWater) {
       availableWater -= 100;
       carryingWater = true;
@@ -162,11 +163,16 @@ public class ForestModel extends GridWorldModel {
       carryingWater = false;
 	  Location r1 = getAgPos(0);
 	  mapDescription[r1.x][r1.y].fireType = FireType.NONE;
-      view.update(lFireman.x,lFireman.y);
+      view.update(lFireman.x,lOwner.y);
       return true;
     } else {
       return false;
     }
+  }*/
+  
+  boolean extinguish(Location r) {
+	  mapDescription[r.x][r.y].fireType = FireType.NONE;
+	  return true;
   }
   boolean loadVictim() {
     if (!carryingVictim) {
@@ -188,7 +194,7 @@ public class ForestModel extends GridWorldModel {
 	  return false;
 	}
   }
-  boolean extinguishFire() {
+  /*boolean extinguish() {
     Location r1 = getAgPos(0);
     if (mapDescription[r1.x][r1.y].fireType == FireType.LIGHT) {
 	  mapDescription[r1.x][r1.y].fireType = FireType.NONE;
@@ -196,5 +202,5 @@ public class ForestModel extends GridWorldModel {
 	} else {
 	  return false;
 	}
-  }
+  }*/
 }

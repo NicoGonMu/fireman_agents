@@ -141,7 +141,7 @@ public class ForestModel extends GridWorldModel {
 	return type;
   }
   
-  boolean moveRandom(Location p) {
+  boolean moveRandom() {
 	int random = 0, x_random = 0, y_random = 0;
 	Location r1 = getAgPos(0);
 	

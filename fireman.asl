@@ -30,13 +30,18 @@
 
 @h5
 +!explore(fireman, P)
-   : not fireman_alert(P) & not carrying_victim(fireman)
-   <- move_random(P);
+   : not fireman_alert & not carrying_victim(fireman)
+   <- move_random;
       check_parcel(P); // fireman,
 	  //execute(P). // fireman,
 	  !explore(fireman, P).
+@x1
++!execute(fireman, P)
+  : heavy_fire
+  <- !notify_plane(fireman);
+     !explore(fireman, P).
 @n1
-+notify_plane(fireman, P)
++!notify_plane(fireman, P)
    : true
    <- .send(plane, achieve, exists_fire(P)).
    

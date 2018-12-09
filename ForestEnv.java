@@ -14,6 +14,11 @@ public class ForestEnv extends Environment {
   public static final Literal dv = Literal.parseLiteral("download(victim)");
   public static final Literal ex = Literal.parseLiteral("extinguish(fire)");
   
+  // Fire state literals
+  public static final Literal hf = Literal.parseLiteral("heavy_fire");
+  public static final Literal rh = Literal.parseLiteral("rescue_help");
+  public static final Literal et = Literal.parseLiteral("extinguish");
+  
   ForestModel model; // the model of the grid
   
   @Override
@@ -101,10 +106,8 @@ public class ForestEnv extends Environment {
         e.printStackTrace();
       }
     } else if (action.getFunctor().equals("move_random")) {
-      Location dest = getDestination(action.getTerm(0).toString());
-
       try {
-        result = model.moveRandom(dest);
+        result = model.moveRandom();
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -160,13 +163,13 @@ public class ForestEnv extends Environment {
 	ForestModel.ActionType actionType = model.checkParcel(p);
 	
 	if(actionType == ForestModel.ActionType.PLANE){
-      addPercept("actionplane",dw);
+      addPercept("fireman", hf);
 	}
 	else if (actionType == ForestModel.ActionType.RESCUEANDHELP) {
-      addPercept("actionrescue",lv);
+      addPercept("fireman",rh);
 	}
 	else if (actionType == ForestModel.ActionType.EXTINGUISH) {
-      addPercept("actionextinghish",ex);
+      addPercept("fireman",et);
 	}
 	/*else {
 		return false;

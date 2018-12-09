@@ -17,6 +17,7 @@ MAS brigada {
     environment: ForestEnv(gui) 
 
     agents: avion;
+	        plane;
             bombero;
             supermarket agentArchClass SupermarketArch;
 }

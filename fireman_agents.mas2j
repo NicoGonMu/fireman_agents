@@ -1,0 +1,13 @@
+MAS fireman_agents {
+
+	infrastructure: Centralised
+
+    environment: ForestEnv(gui) 
+
+    agents: plane;
+            fireman;
+            supermarket agentArchClass SupermarketArch;
+
+	aslSourcePath:
+		"src/asl";
+}

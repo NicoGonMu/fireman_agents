@@ -7,7 +7,7 @@ public class ForestEnv extends Environment {
 
   // common literals
   ///////////////////////BEER LITERALS//////////////////////
-  public static final Literal of  = Literal.parseLiteral("open(fridge)");
+  /*public static final Literal of  = Literal.parseLiteral("open(fridge)");
   public static final Literal clf = Literal.parseLiteral("close(fridge)");
   public static final Literal gb  = Literal.parseLiteral("get(beer)");
   public static final Literal hb  = Literal.parseLiteral("hand_in(beer)");
@@ -15,7 +15,7 @@ public class ForestEnv extends Environment {
   public static final Literal hob = Literal.parseLiteral("has(owner,beer)");
 
   public static final Literal af = Literal.parseLiteral("at(robot,fridge)");
-  public static final Literal ao = Literal.parseLiteral("at(robot,owner)");
+  public static final Literal ao = Literal.parseLiteral("at(robot,owner)");*/
   /////////////////////////////////////////////////////////
   
   public static final Literal apl = Literal.parseLiteral("at(plane,lake)");
@@ -25,9 +25,11 @@ public class ForestEnv extends Environment {
   public static final Literal lv = Literal.parseLiteral("load(victim)");
   public static final Literal dv = Literal.parseLiteral("download(victim)");
   public static final Literal ex = Literal.parseLiteral("extinguish(fire)");
+  public static final Literal mr = Literal.parseLiteral("move_random");
+  public static final Literal cp = Literal.parseLiteral("check_parcel");
   
   ForestModel model; // the model of the grid
-
+  
   @Override
   public void init(String[] args) {
     model = new ForestModel();
@@ -53,43 +55,44 @@ public class ForestEnv extends Environment {
     Location lFireman = model.getAgPos(1);
 	
     // add agent location to its percepts
-    if (lPlane.equals(model.lFridge)) {
+    /*if (lPlane.equals(model.lFridge)) {
       addPercept("plane", af);
     }
     if (lPlane.equals(model.lFireman)) {
       addPercept("plane", ao);
-    }
+    }*/
     
     // add beer "status" to the percepts
-    if (model.fridgeOpen) {
+    /*if (model.fridgeOpen) {
       addPercept("plane", Literal.parseLiteral("stock(beer,"+model.availableBeers+")"));
     }
     if (model.sipCount > 0) {
       addPercept("plane", hob);
       addPercept("fireman", hob);
-    }
+    }*/
   }
 
   @Override
   public boolean executeAction(String ag, Structure action) {
     System.out.println("["+ag+"] doing: "+action);
     boolean result = false;
-    if (action.equals(of)) { // of = open(fridge)
+    /*if (action.equals(of)) { // of = open(fridge)
       result = model.openFridge();
       
     } else if (action.equals(clf)) { // clf = close(fridge)
       result = model.closeFridge();
       
-    } else if (action.getFunctor().equals("move_towards")) {
+    } else*/ 
+    if (action.getFunctor().equals("move_towards")) {
       Location dest = getDestination(action.getTerm(0).toString());
 
       try {
-	result = model.moveTowards(dest);
+	    result = model.moveTowards(dest);
       } catch (Exception e) {
         e.printStackTrace();
       }
             
-    } else if (action.equals(gb)) {
+    } /*else if (action.equals(gb)) {
       result = model.getBeer();
       
     } else if (action.equals(hb)) {
@@ -103,7 +106,8 @@ public class ForestEnv extends Environment {
       try { Thread.sleep(4000); } catch (Exception e) {}
       try { result = model.addBeer( (int)((NumberTerm)action.getTerm(1)).solve()); } catch (Exception e) {}
       
-    } else if (action.equals(ex)) {
+    }*/ 
+    else if (action.equals(ex)) { // EXTINGUISH
       Location dest = getDestination(action.getTerm(0).toString());
 
       try {
@@ -112,12 +116,28 @@ public class ForestEnv extends Environment {
         e.printStackTrace();
       }
       
-    } else if (action.equals(lv)) {
+    } else if (action.equals(lv)) { // LOAD VICTIM
       result = model.loadVictim();
       
-    } else if (action.equals(dv)) {
+    } else if (action.equals(dv)) { // DOWNLOAD VICTIM
       result = model.downloadVictim();
       
+    } else if (action.equals(mr)) { // MOVE RANDOM
+      Location dest = getDestination(action.getTerm(0).toString());
+
+      try {
+    	  result = model.moveRandom(dest);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else if (action.equals(cp)) { // CHECK PARCEL
+      Location dest = getDestination(action.getTerm(0).toString());
+
+      try {
+        result = model.moveRandom(dest);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     } else {
       System.err.println("Failed to execute action "+action);
     }
@@ -129,7 +149,6 @@ public class ForestEnv extends Environment {
     return result;
   }
   
-  
   Location getDestination(String target) {
 	  Location dest = null;
       if (target.equals("plane")) {
@@ -140,5 +159,25 @@ public class ForestEnv extends Environment {
         dest = model.lLake;
       }
 	  return dest;
+  }
+  
+  boolean checkParcel(Location p) {
+	ForestModel.ActionType actionType = model.checkParcel(p);
+	
+	if(actionType == ForestModel.ActionType.PLANE)
+	{
+      addPercept("actionplane",dw);
+	}
+	else if (actionType == ForestModel.ActionType.RESCUEANDHELP) {
+      addPercept("actionrescue",lv);
+	}
+	else if (actionType == ForestModel.ActionType.EXTINGUISH) {
+      addPercept("actionextinghish",ex);
+	}
+	else {
+		return false;
+	}
+	
+	return true;
   }
 }

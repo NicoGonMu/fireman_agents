@@ -1,26 +1,6 @@
-!explore(fireman).  // initial goal
+!explore(fireman, lake).  // initial goal
 
-/* Plans */ 
-
-/* @g 
-+!get(beer) : true 
-   <- .send(robot, achieve, has(owner,beer)).
-
-@h1 
-+has(owner,beer) : true 
-   <- !drink(beer).
-@h2 
--has(owner,beer) : true 
-   <- !get(beer).
-
-// while I have beer, sip   
-@d1 
-+!drink(beer) : has(owner,beer)
-   <- sip(beer);
-      !drink(beer).
-@d2 
-+!drink(beer) : not has(owner,beer)
-   <- true.*/
+/* Plans */
 
 @h1
 +!load_victim(fireman)
@@ -44,16 +24,17 @@
 +!explore(fireman, P)
    : fireman_alert(P)
    <- !at(fireman,P);
-      check(fireman,P);
-	  execute(fireman,P);
+      check_parcel(P); // fireman,
+	  execute(P); // fireman,
       -fireman_alert(P).
 
 @h5
 +!explore(fireman, P)
    : not fireman_alert(P) & not carrying_victim(fireman)
    <- move_random(P);
-      check(fireman,P);
-	  execute(fireman,P).
+      check_parcel(P); // fireman,
+	  //execute(P). // fireman,
+	  !explore(fireman, P).
 @n1
 +notify_plane(fireman, P)
    : true

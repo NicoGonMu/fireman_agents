@@ -7,16 +7,6 @@ public class ForestModel extends GridWorldModel {
   // the grid size
   public static final int GSize = 10;
   
-  ///////////////BEER VARS/////////////////////////
-  // constants for the grid objects
-  //public static final int FRIDGE = 16;
-  //public static final int OWNER  = 32;
-  
-  /*boolean fridgeOpen   = false; // whether the fridge is open
-  boolean carryingBeer = false; // whether the robot is carrying beer*/
-  //int sipCount     = 0; // how many sip the owner did
-  //int availableBeers = 2; // how many beers are available
-  
   //Location lFridge = new Location(0,0);
   //Location lOwner  = new Location(GSize-1,GSize-1);
   ///////////////////////////////////////////////
@@ -41,7 +31,8 @@ public class ForestModel extends GridWorldModel {
   
   // Fire description
   public enum FireType { 
-	  NONE, LIGHT, HEAVY 
+	  NONE, 
+	  LIGHT, HEAVY 
   }
   
   public class Cell { 
@@ -55,11 +46,11 @@ public class ForestModel extends GridWorldModel {
     // create a DSize x GSize grid with one mobile agent
     super(GSize, GSize, 1);
 
-    // initial location of plane (column 3, line 3)
-    // ag code 0 means the plane
+    // initial location of fireman
+    // ag code 0 means the fireman
     setAgPos(0, GSize/2, GSize/2);
     
-    // initial location of fridge and owner
+    // initial location of firemans
     //add(FRIDGE, lFridge);
     add(FIREMAN, lFireman);
 	
@@ -75,72 +66,34 @@ public class ForestModel extends GridWorldModel {
 	mapDescription[2][3].numVictims = 2;
   }
 
-  /*boolean openFridge() {
-    if (!fridgeOpen) {
-      fridgeOpen = true;
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  boolean closeFridge() {
-    if (fridgeOpen) {
-      fridgeOpen = false; 
-      return true;
-    } else {
-      return false;
-    }        
-  }  */
-
   boolean moveTowards(Location dest) {
     Location r1 = getAgPos(0);
     if (r1.x < dest.x)    r1.x++;
     else if (r1.x > dest.x)   r1.x--;
     if (r1.y < dest.y)    r1.y++;
     else if (r1.y > dest.y)   r1.y--;
-    setAgPos(0, r1); // move the robot in the grid
+    setAgPos(0, r1); // move the agent in the grid
         
-    // repaint the fridge and owner locations
+    // repaint the agent locations
     //view.update(lFridge.x,lFridge.y);
     view.update(lFireman.x,lFireman.y);
     return true;
   }
   
-  boolean go(Location dest) {
+  // ES IGUAL QUE LA FUNCION ANTERIOR
+  
+  /*boolean go(Location dest) {
     Location r1 = getAgPos(0);
     if (r1.x < dest.x)    r1.x++;
     else if (r1.x > dest.x)   r1.x--;
     if (r1.y < dest.y)    r1.y++;
     else if (r1.y > dest.y)   r1.y--;
-    setAgPos(0, r1); // move the robot in the grid
+    setAgPos(0, r1); // move the agent in the grid
         
-    // repaint the fridge and owner locations
+    // repaint the agent locations
     //view.update(lFridge.x,lFridge.y);
     view.update(lFireman.x,lFireman.y);
     return true;
-  }
-  
-/*  boolean loadWater() {
-	if (availableWater > 99 && !carryingWater) {
-      availableWater -= 100;
-      carryingWater = true;
-      view.update(lFridge.x,lFridge.y);
-      return true;
-    } else {
-      return false;
-    }
-  }
-  boolean downloadWater() {
-    if (carryingWater) {
-      carryingWater = false;
-	  Location r1 = getAgPos(0);
-	  mapDescription[r1.x][r1.y].fireType = FireType.NONE;
-      view.update(lFireman.x,lOwner.y);
-      return true;
-    } else {
-      return false;
-    }
   }*/
   
   boolean extinguish(Location r) {
@@ -190,20 +143,75 @@ public class ForestModel extends GridWorldModel {
   }
   
   boolean moveRandom(Location p) {
+	int random = 0, x_random = 0, y_random = 0;
+	Location r1 = getAgPos(0);
+	
+	int x = r1.x, y = r1.y;
+	
+    random = (int) (Math.random()*2);
     
-	  
-	  
-	  
+    while(x_random == 0 && y_random == 0) {
+      x_random = (int)(Math.random()*3);
+      y_random = (int)(Math.random()*3);
+    }
+    
+    if(x_random == 0) {
+      x--;
+      if(x < 0) {
+        x = 0;
+      }
+    } else if(x_random == 2) {
+      x++;
+      if(x == GSize) {
+        x = GSize-1;
+      }
+    }
+    
+    if(y_random == 0) {
+      y--;
+      if(y < 0) {
+        y = 0;
+      }
+    } else if(y_random == 2) {
+      y++;
+      if(y == GSize)
+        y = GSize-1;
+    }
+    
+    if((x == r1.x && y == r1.y)){
+      if(random == 0){
+        y--;
+        if(y < 0){
+          y = y + 2;
+        }
+      }
+      else {
+        y++;
+        if(y == GSize) {
+          y = y - 2;
+        }
+      }
+    }
+    
+    if(x == 0 && y == 0)
+    {
+      if(x != r1.x && y != r1.y) {
+        r1.x = x;
+      }
+      else if (x != r1.x) {
+        r1.x = r1.x + 1;
+      }
+      else {
+        r1.y = r1.y + 1;
+      }
+    }
+    else {
+      r1.x = x;
+      r1.y = y;
+    }
+        
+    setAgPos(0, r1); // move the agent in the grid
 	  
     return true;
   }
-  /*boolean extinguish() {
-    Location r1 = getAgPos(0);
-    if (mapDescription[r1.x][r1.y].fireType == FireType.LIGHT) {
-	  mapDescription[r1.x][r1.y].fireType = FireType.NONE;
-	  return true;
-	} else {
-	  return false;
-	}
-  }*/
 }

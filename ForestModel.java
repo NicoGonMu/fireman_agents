@@ -194,7 +194,19 @@ public class ForestModel extends GridWorldModel {
 	} else {
 	  return false;
 	}
-  }
+  
+	
+	boolean check(Location p) {
+      if (mapDescription[p.x][p.y].fireType == FireType.HEAVY) {
+		  model.addPerception(); //ASK PLANE
+      } else if ((mapDescription[p.x][p.y].fireType == FireType.LIGHT && mapDescription[p.x][p.y].numVictims > 0) || (mapDescription[p.x][p.y].numVictims > 1)) {
+		  model.addPerception(); //ASK HELP
+	  } else if (mapDescription[p.x][p.y].fireType == FireType.LIGHT){
+	      model.addPerception(); // ESTINGUISH
+	  } else if (mapDescription[p.x][p.y].numVictims > 0 {
+		  model.addPerception(); // RESCUE
+	  }
+	}
   /*boolean extinguish() {
     Location r1 = getAgPos(0);
     if (mapDescription[r1.x][r1.y].fireType == FireType.LIGHT) {

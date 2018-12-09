@@ -28,14 +28,10 @@
    <- +carrying_victim(fireman);
       !download_victim(fireman).
 
-+!go_to_base(fireman)
-   : carrying_victim(fireman)
-   <- move_towards(base).
-
 @h2
 +!download_victim(fireman, P)
    : carrying_victim(fireman)
-   <- !go_to_base(P);
+   <- !at(fireman, lake);
    	  download_victim(P);
    	  -carrying_victim(fireman).
 
@@ -48,14 +44,16 @@
 +!explore(fireman, P)
    : fireman_alert(P)
    <- !at(fireman,P);
-      CHECK
+      check(fireman,P);
+	  execute(fireman,P);
       -fireman_alert(P).
 
 @h5
 +!explore(fireman, P)
    : not fireman_alert(P) & not carrying_victim(fireman)
-   <- move_random(P).
-
+   <- move_random(P);
+      check(fireman,P);
+	  execute(fireman,P).
 @n1
 +notify_plane(fireman, P)
    : true

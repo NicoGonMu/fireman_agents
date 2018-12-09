@@ -20,14 +20,34 @@ public class ForestView extends GridWorldView {
   /** draw application objects */
   @Override
   public void draw(Graphics g, int x, int y, int object) {
-    Location lPlane = fmodel.getAgPos(0);
-    super.drawAgent(g, x, y, Color.lightGray, -1);
-    /*if (lPlane.equals(fmodel.lFireman)) {
-      super.drawAgent(g, x, y, Color.yellow, -1);
-    }*/ //NO DEBERÍA PODER DARSE
+    Location lObject = fmodel.getAgPos(0);
+    
+    Color color = Color.lightGray;
+	super.drawAgent(g, x, y, color, -1);
+    
+    switch (object) {
+      case ForestModel.LAKE:{
+    	color = Color.BLUE;
+    	if(fmodel.isEmpty) color = Color.WHITE;
+        //if (lObject.equals(fmodel.lLake)) {
+          super.drawAgent(g, x, y, color, -1);
+        //}
 	  
-    g.setColor(Color.black);
-    drawString(g, x, y, defaultFont, "Plane");
+        g.setColor(Color.black);
+        drawString(g, x, y, defaultFont, "Lake");
+        break;
+      }
+      case ForestModel.PLANE:{
+    	if(fmodel.carryingWater) color = Color.cyan;
+        //if (lObject.equals(fmodel.lPlane)) {
+      	  super.drawAgent(g, x, y, color, -1);
+        //}
+    	  
+        g.setColor(Color.black);
+        drawString(g, x, y, defaultFont, "Plane");
+        break;
+      }
+    }
   }
 
   @Override
@@ -35,7 +55,7 @@ public class ForestView extends GridWorldView {
     Location lFireman = fmodel.getAgPos(0);
     if (!lFireman.equals(fmodel.lPlane) && !lFireman.equals(fmodel.lLake)) {
       c = Color.yellow;
-      //if (fmodel.carryingBeer) c = Color.orange;
+      if (fmodel.carryingVictim) c = Color.RED;
       super.drawAgent(g, x, y, c, -1);
       g.setColor(Color.black);
       super.drawString(g, x, y, defaultFont, "Fireman");

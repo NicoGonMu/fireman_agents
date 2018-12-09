@@ -7,16 +7,14 @@ public class ForestModel extends GridWorldModel {
   // the grid size
   public static final int GSize = 10;
   
-  //Location lFridge = new Location(0,0);
-  //Location lOwner  = new Location(GSize-1,GSize-1);
-  ///////////////////////////////////////////////
-  
   // Problem variables
-  //public static final int FRIDGE = 16;
+  public static final int LAKE  = 16;
   public static final int FIREMAN  = 32;
+  public static final int PLANE  = 64;
   
   int availableWater = 1000; // How much available water
-  boolean carryingWater = false;  // Wheter the plain is carrying water
+  boolean isEmpty = false; // Wheter the lake is empty
+  boolean carryingWater = true;  // Wheter the plain is carrying water
   boolean carryingVictim = false; // Wheter the fireman is carrying a victim
   
   Location lFireman  = new Location(GSize-1,GSize-1);
@@ -50,9 +48,10 @@ public class ForestModel extends GridWorldModel {
     // ag code 0 means the fireman
     setAgPos(0, GSize/2, GSize/2);
     
-    // initial location of firemans
-    //add(FRIDGE, lFridge);
+    // initial location of objets
+    add(LAKE, lLake);
     add(FIREMAN, lFireman);
+    add(PLANE, lPlane);
 	
 	// Initialize map description
 	for(int i = 0; i < GSize; i++) {

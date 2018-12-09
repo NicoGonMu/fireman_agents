@@ -48,22 +48,19 @@ too_much(B) :-
 @h1
 +!load_water(plane)
    : not carrying_water(plane)
-   <- +carrying_water(plane);
-      +consumed(YY,MM,DD,HH,NN,SS,water);
-      !download_water(plane).
+   <- !at(plane, lake);
+      +carrying_water(plane);
+      +consumed(YY,MM,DD,HH,NN,SS,water).
 @h2
 +!load_water(plane)
    : too_much(water) & limit(water,L)    
-   <- .concat("The Department of Health does not allow me ",
-              "to give you more than ", L,
-              " beers a day! I am very sorry about that!",M);
+   <- .concat("Lake has no water right now.",M);
       .send(fireman,tell,msg(M)).    
 @h3
 +!download_water(plane, P)
    : not carrying_water(plane)
    <- !load_water(plane);
       !download_water(plane, P).
-   
 @h4
 +!download_water(plane, P)
    : carrying_water(plane)
@@ -98,6 +95,6 @@ too_much(B) :-
 //   <- +available(beer,fridge).
    
 @a1
-+fire_detected(P)[source(fireman)] : true
-  <- !download_water(plane,P);
++fire_detected(M)[source(fireman)] : true
+  <- !download_water(plane,fireman);
      -fire_detected.

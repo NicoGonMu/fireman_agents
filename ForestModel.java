@@ -32,6 +32,7 @@ public class ForestModel extends GridWorldModel {
   
   Location lFireman  = new Location(GSize-1,GSize-1);
   Location lPlane    = new Location(GSize-1,GSize-1);
+  Location lLake     = new Location(0,0);
   
   // Map description
   public static enum FireType { NONE, LIGHT, HEAVY }

@@ -18,7 +18,8 @@ public class ForestEnv extends Environment {
   public static final Literal ao = Literal.parseLiteral("at(robot,owner)");
   /////////////////////////////////////////////////////////
   
-  public static final Literal lw = Literal.parseLiteral("at(plane, lake)");
+  public static final Literal apl = Literal.parseLiteral("at(plane,lake)");
+  public static final Literal afl = Literal.parseLiteral("at(fireman,lake)");
   public static final Literal lw = Literal.parseLiteral("load(water)");
   public static final Literal dw = Literal.parseLiteral("download(water)");
   public static final Literal lv = Literal.parseLiteral("load(victim)");

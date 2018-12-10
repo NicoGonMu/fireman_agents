@@ -32,8 +32,8 @@
 +!explore(fireman, P)
    : not fireman_alert & not carrying_victim(fireman)
    <- move_random;
-      check_parcel; // fireman,
-	  !proceed(fireman); // fireman,
+      check_parcel;
+	  !proceed(fireman);
 	  !explore(fireman, P).
 @p1
 +!proceed(fireman)
@@ -42,7 +42,8 @@
 @p2
 +!proceed(fireman)
   : heavy_fire
-  <- !notify_plane(fireman).
+  <- !notify_plane(fireman);
+     !explore(fireman, x).
 @p3
 +!proceed(fireman)
   : rescue_help
@@ -52,22 +53,22 @@
 +!proceed(fireman)
   : light_fire
   <- extinguish(fireman).
-
 	 
 @n1
 +!notify_plane(fireman)
    : true
    <- .send(plane, achieve, exists_fire).
+
 @n2
 +!notify_fireman(fireman, P)
    : true
-   <- .send(fireman2, achieve, exists_fire(P)). //DUDA DE CÓMO ENVIAR A OTRO BOMBERO
+   <- .send(fireman2, achieve, exists_fire). //DUDA DE CÓMO ENVIAR A OTRO BOMBERO
 
 @m1
 +!at(fireman,P) : at(fireman,P) <- true. //COMPROBAR SI ES VALIDO EL NOMBRE DE AT
 @m2
 +!at(fireman,P) : not at(fireman,P)
-  <- move_towards(P);
+  <- move_towards(fireman,P);
      !at(fireman,P).
 
 @a1

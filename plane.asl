@@ -20,8 +20,10 @@ too_much(B) :-
 +!load_water(plane)
    : not carrying_water(plane)
    <- !at(plane, lake);
+      load_water;
       +carrying_water(plane);
       +consumed(YY,MM,DD,HH,NN,SS,water).
+      
 @h2
 +!load_water(plane)
    : too_much(water) & limit(water,L)    
@@ -33,20 +35,22 @@ too_much(B) :-
    <- !load_water(plane);
       !download_water(plane, P).
 @h4
-+!download_water(plane, P)
++!download_water(P)
    : carrying_water(plane)
    <- !at(plane, P);
       extinguish(P);
-      -carrying_water(plane).
+      download_water;
+      -carrying_water(plane);
+      !load_water(plane).
 	  
 @m1
 +!at(plane,P) : at(plane,P) <- true.
 @m2
 +!at(plane,P) : not at(plane,P)
-  <- move_towards(P);
+  <- move_towards(plane,P);
      !at(plane,P).
    
 @a1
-+fire_detected[source(fireman)] : true
-  <- !download_water(plane,fireman);
-     -fire_detected.
++!exists_fire[source(fireman)] : true
+  <- !download_water(fireman).
+     //-exists_fire.

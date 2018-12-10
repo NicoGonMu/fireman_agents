@@ -6,13 +6,12 @@ import java.util.logging.Logger;
 public class ForestEnv extends Environment {
 
   // common literals
-  public static final Literal apl = Literal.parseLiteral("at(plane,lake)");
-  public static final Literal afl = Literal.parseLiteral("at(fireman,lake)");
-  public static final Literal lw = Literal.parseLiteral("load(water)");
-  public static final Literal dw = Literal.parseLiteral("download(water)");
+  public static final Literal apl = Literal.parseLiteral("at(plane,fireman)");
+  public static final Literal afl = Literal.parseLiteral("at(fireman,fireman)");
+  public static final Literal lw = Literal.parseLiteral("load_water");
+  public static final Literal dw = Literal.parseLiteral("download_water");
   public static final Literal lv = Literal.parseLiteral("load(victim)");
   public static final Literal dv = Literal.parseLiteral("download(victim)");
-  public static final Literal ex = Literal.parseLiteral("extinguish(fire)");
   public static final Literal pr = Literal.parseLiteral("proceed");
   
   // Fire state literals
@@ -21,7 +20,8 @@ public class ForestEnv extends Environment {
   public static final Literal lf = Literal.parseLiteral("light_fire");
   
   ForestModel model; // the model of the grid
-  
+  ForestModel.ActionType actionType;
+    
   @Override
   public void init(String[] args) {
     model = new ForestModel();
@@ -34,14 +34,11 @@ public class ForestEnv extends Environment {
     updatePercepts();
   }
     
-  /** creates the agents percepts based on the HouseModel */
+  /** creates the agents percepts based on the Forest */
   void updatePercepts() {
     // clear the percepts of the agents
     clearPercepts("plane");
     clearPercepts("fireman");
-    //clearPercepts("actionplane");
-    //clearPercepts("actionrescue");
-    //clearPercepts("actionextinguish");
     
     // get the plane location
     Location lPlane = model.getAgPos(0);
@@ -54,12 +51,36 @@ public class ForestEnv extends Environment {
       addPercept("plane", af);
     }*/
     
-    if (lPlane.equals(model.lFireman)) {
+    /*if (lPlane.equals(model.lPlane)) {
+      System.out.println("LPLANE");
       //addPercept("plane", apl);
-      //addPercept("actionplane", dw);
-      //addPercept("actionrescue", lv);
-      //addPercept("actionextinguish", ex);
+    }*/
+
+    addPercept("plane", apl);
+    
+    if(actionType == ForestModel.ActionType.PLANE){
+      System.out.println("FUEGOOOOOOOOO");
+      addPercept("fireman", hf);
     }
+    else if (actionType == ForestModel.ActionType.RESCUEANDHELP) {
+      addPercept("fireman",rh);
+    }
+    else if (actionType == ForestModel.ActionType.EXTINGUISH) {
+      addPercept("fireman",lf);
+    }
+    
+    /*if (lPlane.equals(model.lFireman)) {
+      System.out.println("LFIREMAN");
+      if(actionType == ForestModel.ActionType.PLANE){
+        addPercept("fireman", hf);
+      }
+      else if (actionType == ForestModel.ActionType.RESCUEANDHELP) {
+        addPercept("fireman",rh);
+      }
+      else if (actionType == ForestModel.ActionType.EXTINGUISH) {
+        addPercept("fireman",lf);
+      }
+    }*/
     
     // add beer "status" to the percepts
     /*if (model.fridgeOpen) {
@@ -77,32 +98,21 @@ public class ForestEnv extends Environment {
     
     boolean result = false;
     
-    /*if (action.equals(of)) { // of = open(fridge)
-      result = model.openFridge();
-      
-    } else if (action.equals(clf)) { // clf = close(fridge)
-      result = model.closeFridge();
-      
-    } else if (action.equals(gb)) {
-      result = model.getBeer();
-      
-    } else if (action.equals(hb)) {
-      result = model.handInBeer();
-      
-    } else if (action.equals(sb)) {
-      result = model.sipBeer();
-      
-    } else if (action.getFunctor().equals("deliver")) {
-    // wait 4 seconds to finish "deliver"
-      try { Thread.sleep(4000); } catch (Exception e) {}
-      try { result = model.addBeer( (int)((NumberTerm)action.getTerm(1)).solve()); } catch (Exception e) {}
-    }*/
-    
     if (action.getFunctor().equals("move_towards")) {
-      Location dest = getDestination(action.getTerm(0).toString());
+      int agent = -1;
+      String getTermOrigin = action.getTerm(0).toString();
+      String getTermDest = action.getTerm(1).toString();
+      
+      Location dest = getDestination(getTermDest);
 
+      if (getTermOrigin.equals("fireman")) {
+        agent = 0;
+      } else if (getTermOrigin.equals("plane")) {
+        agent = 1;
+      }
+      
       try {
-	    result = model.moveTowards(dest);
+	    result = model.moveTowards(dest, agent);
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -118,8 +128,8 @@ public class ForestEnv extends Environment {
       } catch (Exception e) {
         e.printStackTrace();
       }
-    } else if (action.equals(ex)) { // EXTINGUISH
-      Location dest = getDestination(action.getTerm(0).toString());
+    } else if (action.getFunctor().equals("extinguish")) { // EXTINGUISH    	
+        Location dest = getDestination(action.getTerm(0).toString());
 
       try {
 	    result = model.extinguish(dest);
@@ -132,47 +142,41 @@ public class ForestEnv extends Environment {
     } else if (action.equals(dv)) { // DOWNLOAD VICTIM
       result = model.downloadVictim();
       
-    } else {
+    } else if (action.equals(lw)) { // LOAD WATER
+      result = model.loadWater();
+      
+    } else if (action.equals(dw)) { // DOWNLOAD WATER
+      result = model.downloadWater();
+      
+    }
+    else {
       System.err.println("Failed to execute action "+action);
     }
 
     if (result) {
       updatePercepts();
-      try { Thread.sleep(100); } catch (Exception e) {}
+      try { Thread.sleep(500); } catch (Exception e) {}
     }
     
     return result;
   }
   
   Location getDestination(String target) {
-	  Location dest = null;
+    Location dest = null;
 	  
-      if (target.equals("plane")) {
-        dest = model.lPlane;
-      } else if (target.equals("fireman")) {
-        dest = model.lFireman;
-      } else if (target.equals("lake")) {
-        dest = model.lLake;
-      }
+    if (target.equals("plane")) {
+      dest = model.getAgPos(1);
+    } else if (target.equals("fireman")) {
+      dest = model.getAgPos(0);
+    } else if (target.equals("lake")) {
+      dest = model.lLake;
+    }
       
-	  return dest;
+	return dest;
   }
   
   boolean checkParcel() {
-	ForestModel.ActionType actionType = model.checkParcel(model.lFireman);
-	
-	if(actionType == ForestModel.ActionType.PLANE){
-      addPercept("fireman", hf);
-	}
-	else if (actionType == ForestModel.ActionType.RESCUEANDHELP) {
-      addPercept("fireman",rh);
-	}
-	else if (actionType == ForestModel.ActionType.EXTINGUISH) {
-      addPercept("fireman",lf);
-	}
-	/*else {
-		return false;
-	}*/
+	actionType = model.checkParcel();
 		
 	return true;
   }

@@ -9,16 +9,16 @@ public class ForestModel extends GridWorldModel {
   
   // Problem variables
   public static final int LAKE  = 16;
-  public static final int FIREMAN  = 32;
-  public static final int PLANE  = 64;
+  public static final int FIRE  = 32;
   
   int availableWater = 1000; // How much available water
   boolean isEmpty = false; // Wheter the lake is empty
   boolean carryingWater = true;  // Wheter the plain is carrying water
   boolean carryingVictim = false; // Wheter the fireman is carrying a victim
   
-  Location lFireman  = new Location(GSize-1,GSize-1);
-  Location lPlane    = new Location(GSize-1,GSize-1);
+  //Location lFireman  = new Location(GSize/2,GSize/2);
+  //Location lPlane    = new Location(GSize-1,GSize-1);
+  Location lFire     = new Location(5,6);
   Location lLake     = new Location(0,0);
   
   // Action description
@@ -41,17 +41,18 @@ public class ForestModel extends GridWorldModel {
   public Cell[][] mapDescription = new Cell[GSize][GSize];
 
   public ForestModel() {
-    // create a DSize x GSize grid with one mobile agent
-    super(GSize, GSize, 1);
+    // create a DSize x GSize grid
+    super(GSize, GSize, 2);
 
-    // initial location of fireman
+    // initial location of agents
     // ag code 0 means the fireman
     setAgPos(0, GSize/2, GSize/2);
+ // ag code 1 means the plane
+    setAgPos(1, GSize-1, GSize-1);
     
     // initial location of objets
     add(LAKE, lLake);
-    add(FIREMAN, lFireman);
-    add(PLANE, lPlane);
+    add(FIRE, lFire);
 	
 	// Initialize map description
 	for(int i = 0; i < GSize; i++) {
@@ -61,25 +62,26 @@ public class ForestModel extends GridWorldModel {
 	}
 	
 	// Set fire types and number of victims per cell
+	//mapDescription[4][5].fireType = FireType.HEAVY;
 	mapDescription[5][6].fireType = FireType.HEAVY;
 	mapDescription[2][3].fireType = FireType.LIGHT;
 	mapDescription[2][3].numVictims = 2;
   }
 
-  boolean moveTowards(Location dest) {
-    Location r1 = getAgPos(0);
+  boolean moveTowards(Location dest, int agent) {
+    Location r1 = getAgPos(agent);
     if (r1.x < dest.x)    r1.x++;
     else if (r1.x > dest.x)   r1.x--;
     if (r1.y < dest.y)    r1.y++;
     else if (r1.y > dest.y)   r1.y--;
-    setAgPos(0, r1); // move the agent in the grid
+    setAgPos(agent, r1); // move the agent in the grid
         
     // repaint the agent locations
-    //view.update(lFridge.x,lFridge.y);
-    view.update(lFireman.x,lFireman.y);
+    //view.update(lPlane.x,lPlane.y);
+    //view.update(lFireman.x,lFireman.y);
+    
     return true;
   }
-  
   
   boolean extinguish(Location r) {
 	  mapDescription[r.x][r.y].fireType = FireType.NONE;
@@ -108,21 +110,31 @@ public class ForestModel extends GridWorldModel {
 	  return false;
 	}
   }
+  
+  boolean loadWater() {
+    carryingWater = true;
+    
+    return true;
+  }
+  
+  boolean downloadWater() {
+    carryingWater = false;
+    
+    return true;
+  }
 	
-  ActionType checkParcel(Location p) {
+  ActionType checkParcel() {
+	Location p = getAgPos(0);
 	ActionType type = ActionType.NONE;
 	
     if (mapDescription[p.x][p.y].fireType == FireType.HEAVY) {
       type = ActionType.PLANE; //ASK PLANE
     } else if ((mapDescription[p.x][p.y].fireType == FireType.LIGHT && mapDescription[p.x][p.y].numVictims > 0) || (mapDescription[p.x][p.y].numVictims > 1)) {
-    	type = ActionType.RESCUEANDHELP; //RESCUE AND HELP
-      }
+      type = ActionType.RESCUEANDHELP; //RESCUE AND HELP
+    }
 	else if (mapDescription[p.x][p.y].fireType == FireType.LIGHT){
 	  type = ActionType.EXTINGUISH; // EXTINGUISH
 	}
-	/*else if (mapDescription[p.x][p.y].numVictims > 0) {
-      type = ActionType.RESCUE; // RESCUE
-    }*/
 	
 	return type;
   }
@@ -223,7 +235,14 @@ public class ForestModel extends GridWorldModel {
       r1.x = x;
       r1.y = y;
     }
-        
+    
+    ////////////////77
+    //r1.x = 5;
+    //r1.y = 6;
+    ///////////
+
+    //lFireman.x = r1.x;
+    //lFireman.y = r1.y;
     setAgPos(0, r1); // move the agent in the grid
       
     return true;

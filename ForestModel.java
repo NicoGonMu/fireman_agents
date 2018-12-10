@@ -141,6 +141,10 @@ public class ForestModel extends GridWorldModel {
 	return type;
   }
   
+  boolean proceed(Location p) {
+    return true;
+  }
+  
   boolean moveRandom() {
 	int random = 0, x_random = 0, y_random = 0;
 	Location r1 = getAgPos(0);
@@ -224,3 +228,38 @@ public class ForestModel extends GridWorldModel {
     return true;
   }
 }
+
+//        Location fireman = getAgPos(1);
+//        movementDone = false;
+//        while !movementDone {
+//          // Up, right, down, left
+//       r = random(1,4);
+//          switch(r) {
+//            case 1:
+//                  if (fireman.x > 0) {
+//                    fireman.x--;
+//                    movementDone = true;
+//                    break;
+//            case 2:
+//                  if (fireman.y < GSize) {
+//                    fireman.y++;
+//                    movementDone = true;
+//                    break;
+//            case 3:
+//                  if (fireman.x < GSize) {
+//                    fireman.x++;
+//                    movementDone = true;
+//                    break;
+//            case 4:
+//                  if (fireman.y > 0) {
+//                    fireman.y--;
+//                    movementDone = true;
+//                    break;
+//          }
+//        }
+//        setAgPos(0, r1); // move the agent in the grid
+//        
+//     // repaint fireman locations
+//     view.update(lFireman.x,lFireman.y);
+//        return true;
+

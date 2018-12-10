@@ -13,6 +13,7 @@ public class ForestEnv extends Environment {
   public static final Literal lv = Literal.parseLiteral("load(victim)");
   public static final Literal dv = Literal.parseLiteral("download(victim)");
   public static final Literal ex = Literal.parseLiteral("extinguish(fire)");
+  public static final Literal pr = Literal.parseLiteral("proceed");
   
   // Fire state literals
   public static final Literal hf = Literal.parseLiteral("heavy_fire");
@@ -111,11 +112,15 @@ public class ForestEnv extends Environment {
       } catch (Exception e) {
         e.printStackTrace();
       }
-    } else if (action.getFunctor().equals("check_parcel")) {
-      Location dest = getDestination(action.getTerm(0).toString());
-      
+    } else if (action.getFunctor().equals("check_parcel")) {      
       try {
-        result = checkParcel(dest);
+        result = checkParcel();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else if (action.equals(pr)) { // PROCEED
+      try {
+	    result = model.proceed(model.lFireman);
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -159,8 +164,8 @@ public class ForestEnv extends Environment {
 	  return dest;
   }
   
-  boolean checkParcel(Location p) {
-	ForestModel.ActionType actionType = model.checkParcel(p);
+  boolean checkParcel() {
+	ForestModel.ActionType actionType = model.checkParcel(model.lFireman);
 	
 	if(actionType == ForestModel.ActionType.PLANE){
       addPercept("fireman", hf);

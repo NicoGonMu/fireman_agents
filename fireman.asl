@@ -1,4 +1,4 @@
-!explore(fireman, lake).  // initial goal
+!explore(fireman, x).  // initial goal
 
 /* Plans */
 
@@ -22,31 +22,40 @@
 
 @h4
 +!explore(fireman, P)
-   : fireman_alert(P)
+   : fireman_alert
    <- !at(fireman,P);
-      check_parcel(P); // fireman,
-	  execute(P); // fireman,
-      -fireman_alert(P).
+      check_parcel;
+	  !proceed;
+      -fireman_alert.
 
 @h5
 +!explore(fireman, P)
    : not fireman_alert & not carrying_victim(fireman)
    <- move_random;
-      check_parcel(P); // fireman,
-	  //execute(P). // fireman,
+      check_parcel; // fireman,
+	  !proceed; // fireman,
 	  !explore(fireman, P).
-@x1
-+!execute(fireman, P)
+	  
+@p1
++!proceed(fireman)
   : heavy_fire
-  <- !notify_plane(fireman);
-     !explore(fireman, P).
+  <- !notify_plane(fireman).
+@p2
++!proceed(fireman)
+  : rescue_help
+  <- !notify_fireman(fireman);
+     load_victim(fireman).
+@p3
++!proceed(fireman)
+  : light_fire
+  <- extinguish(fireman).	 
+	 
 @n1
-+!notify_plane(fireman, P)
++!notify_plane(fireman)
    : true
-   <- .send(plane, achieve, exists_fire(P)).
-   
+   <- .send(plane, achieve, exists_fire).
 @n2
-+notify_fireman(fireman, P)
++!notify_fireman(fireman, P)
    : true
    <- .send(fireman2, achieve, exists_fire(P)). //DUDA DE CÓMO ENVIAR A OTRO BOMBERO
 
@@ -58,8 +67,8 @@
      !at(fireman,P).
 
 @a1
-+fireman_alert(P)[source(fireman)] : true
-   <- explore(fireman2,P). //DUDA DE CÓMO ENVIAR A OTRO BOMBERO
++fireman_alert(P)[source(fireman2)] : true
+   <- explore(fireman,fireman2). //DUDA DE CÓMO ENVIAR A OTRO BOMBERO
 
 @a2
 +msg(M)[source(plane)] : true 

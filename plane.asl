@@ -47,6 +47,6 @@ too_much(B) :-
      !at(plane,P).
    
 @a1
-+fire_detected(M)[source(fireman)] : true
++fire_detected[source(fireman)] : true
   <- !download_water(plane,fireman);
      -fire_detected.

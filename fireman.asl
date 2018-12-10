@@ -25,7 +25,7 @@
    : fireman_alert
    <- !at(fireman,P);
       check_parcel;
-	  !proceed;
+	  !proceed(fireman);
       -fireman_alert.
 
 @h5
@@ -33,22 +33,26 @@
    : not fireman_alert & not carrying_victim(fireman)
    <- move_random;
       check_parcel; // fireman,
-	  !proceed; // fireman,
+	  !proceed(fireman); // fireman,
 	  !explore(fireman, P).
-	  
 @p1
++!proceed(fireman)
+  : not heavy_fire & not rescue_help & not light_fire
+  <- true.
+@p2
 +!proceed(fireman)
   : heavy_fire
   <- !notify_plane(fireman).
-@p2
+@p3
 +!proceed(fireman)
   : rescue_help
   <- !notify_fireman(fireman);
-     load_victim(fireman).
-@p3
+     !load_victim(fireman).
+@p4
 +!proceed(fireman)
   : light_fire
-  <- extinguish(fireman).	 
+  <- extinguish(fireman).
+
 	 
 @n1
 +!notify_plane(fireman)
@@ -67,7 +71,7 @@
      !at(fireman,P).
 
 @a1
-+fireman_alert(P)[source(fireman2)] : true
++fireman_alert[source(fireman2)] : true
    <- explore(fireman,fireman2). //DUDA DE CÓMO ENVIAR A OTRO BOMBERO
 
 @a2

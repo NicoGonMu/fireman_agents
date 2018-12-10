@@ -30,12 +30,19 @@ public class ForestView extends GridWorldView {
 	    g.setColor(Color.black);
 	    drawString(g, x, y, defaultFont, "Lake");
 		break;
-	  case ForestModel.FIRE:
+	  case ForestModel.HFIRE:
 		color = Color.RED;
 	    //if(fmodel.isEmpty) color = Color.WHITE;
 	    super.drawAgent(g, x, y, color, -1);
 		g.setColor(Color.black);
-		drawString(g, x, y, defaultFont, "Fire");
+		drawString(g, x, y, defaultFont, "HFire");
+		break;
+	  case ForestModel.LFIRE:
+		color = Color.ORANGE;
+	    //if(fmodel.isEmpty) color = Color.WHITE;
+	    super.drawAgent(g, x, y, color, -1);
+		g.setColor(Color.black);
+		drawString(g, x, y, defaultFont, "HFire");
 		break;
 	}
   }

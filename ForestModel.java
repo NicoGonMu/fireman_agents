@@ -9,7 +9,8 @@ public class ForestModel extends GridWorldModel {
   
   // Problem variables
   public static final int LAKE  = 16;
-  public static final int FIRE  = 32;
+  public static final int HFIRE  = 32;
+  public static final int LFIRE  = 64;
   
   int availableWater = 1000; // How much available water
   boolean isEmpty = false; // Wheter the lake is empty
@@ -18,7 +19,8 @@ public class ForestModel extends GridWorldModel {
   
   //Location lFireman  = new Location(GSize/2,GSize/2);
   //Location lPlane    = new Location(GSize-1,GSize-1);
-  Location lFire     = new Location(5,6);
+  Location lHFire     = new Location(5,6);
+  Location lLFire     = new Location(6,6);
   Location lLake     = new Location(0,0);
   
   // Action description
@@ -52,7 +54,8 @@ public class ForestModel extends GridWorldModel {
     
     // initial location of objets
     add(LAKE, lLake);
-    add(FIRE, lFire);
+    add(HFIRE, lHFire);
+	add(LFIRE, lLFire);
 	
 	// Initialize map description
 	for(int i = 0; i < GSize; i++) {
@@ -112,14 +115,13 @@ public class ForestModel extends GridWorldModel {
   }
   
   boolean loadWater() {
+	System.out.println("loaaaaaaaaaaaaaaaaaaaaaaad");
     carryingWater = true;
-    
     return true;
   }
   
   boolean downloadWater() {
     carryingWater = false;
-    
     return true;
   }
 	
@@ -237,8 +239,8 @@ public class ForestModel extends GridWorldModel {
     }
     
     ////////////////77
-    //r1.x = 5;
-    //r1.y = 6;
+    r1.x = 5;
+    r1.y = 6;
     ///////////
 
     //lFireman.x = r1.x;

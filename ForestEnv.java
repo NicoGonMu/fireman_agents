@@ -6,13 +6,12 @@ import java.util.logging.Logger;
 public class ForestEnv extends Environment {
 
   // common literals
-  public static final Literal apl = Literal.parseLiteral("at(plane,fireman)");
-  public static final Literal afl = Literal.parseLiteral("at(fireman,fireman)");
   public static final Literal lw = Literal.parseLiteral("load_water");
   public static final Literal dw = Literal.parseLiteral("download_water");
   public static final Literal lv = Literal.parseLiteral("load(victim)");
   public static final Literal dv = Literal.parseLiteral("download(victim)");
   public static final Literal pr = Literal.parseLiteral("proceed");
+  //public static final Literal pr = Literal.parseLiteral("carrying_water(plane)");
   
   // Fire state literals
   public static final Literal hf = Literal.parseLiteral("heavy_fire");
@@ -41,26 +40,23 @@ public class ForestEnv extends Environment {
     clearPercepts("fireman");
     
     // get the plane location
-    Location lPlane = model.getAgPos(0);
+    Location lPlane = model.getAgPos(1);
 
     // get the fireman location
-    Location lFireman = model.getAgPos(1);
+    Location lFireman = model.getAgPos(0);
 	
     // add agent location to its percepts
-    /*if (lPlane.equals(model.lFridge)) {
-      addPercept("plane", af);
-    }*/
-    
-    /*if (lPlane.equals(model.lPlane)) {
-      System.out.println("LPLANE");
-      //addPercept("plane", apl);
-    }*/
+    Literal pos1 = Literal.parseLiteral("pos(fireman," + lFireman.x + "," + lFireman.y + ")");
+    Literal pos2 = Literal.parseLiteral("pos(plane," + lPlane.x + "," + lPlane.y + ")");
 
-    addPercept("plane", apl);
+    addPercept(pos1);
+    addPercept(pos2);
     
     if(actionType == ForestModel.ActionType.PLANE){
       System.out.println("FUEGOOOOOOOOO");
       addPercept("fireman", hf);
+	  Literal posHF = Literal.parseLiteral("pos(hfire," + lFireman.x + "," + lFireman.y + ")");
+	  addPercept(posHF);
     }
     else if (actionType == ForestModel.ActionType.RESCUEANDHELP) {
       addPercept("fireman",rh);
@@ -68,19 +64,6 @@ public class ForestEnv extends Environment {
     else if (actionType == ForestModel.ActionType.EXTINGUISH) {
       addPercept("fireman",lf);
     }
-    
-    /*if (lPlane.equals(model.lFireman)) {
-      System.out.println("LFIREMAN");
-      if(actionType == ForestModel.ActionType.PLANE){
-        addPercept("fireman", hf);
-      }
-      else if (actionType == ForestModel.ActionType.RESCUEANDHELP) {
-        addPercept("fireman",rh);
-      }
-      else if (actionType == ForestModel.ActionType.EXTINGUISH) {
-        addPercept("fireman",lf);
-      }
-    }*/
     
     // add beer "status" to the percepts
     /*if (model.fridgeOpen) {
@@ -101,9 +84,10 @@ public class ForestEnv extends Environment {
     if (action.getFunctor().equals("move_towards")) {
       int agent = -1;
       String getTermOrigin = action.getTerm(0).toString();
-      String getTermDest = action.getTerm(1).toString();
+      int getTermDestX = Integer.parseInt(action.getTerm(1).toString());
+	  int getTermDestY = Integer.parseInt(action.getTerm(2).toString());
       
-      Location dest = getDestination(getTermDest);
+      Location dest = new Location(getTermDestX, getTermDestY);
 
       if (getTermOrigin.equals("fireman")) {
         agent = 0;

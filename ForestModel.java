@@ -16,6 +16,8 @@ public class ForestModel extends GridWorldModel {
   boolean isEmpty = false; // Wheter the lake is empty
   boolean carryingWater = true;  // Wheter the plain is carrying water
   boolean carryingVictim = false; // Wheter the fireman is carrying a victim
+  boolean hfOff = false; //Heavy fire is extinguished
+  boolean lfOff = false; //Light fire is extinguished
   
   //Location lFireman  = new Location(GSize/2,GSize/2);
   //Location lPlane    = new Location(GSize-1,GSize-1);
@@ -67,6 +69,7 @@ public class ForestModel extends GridWorldModel {
 	// Set fire types and number of victims per cell
 	//mapDescription[4][5].fireType = FireType.HEAVY;
 	mapDescription[5][6].fireType = FireType.HEAVY;
+	mapDescription[6][6].fireType = FireType.LIGHT;
 	mapDescription[2][3].fireType = FireType.LIGHT;
 	mapDescription[2][3].numVictims = 2;
   }
@@ -87,7 +90,13 @@ public class ForestModel extends GridWorldModel {
   }
   
   boolean extinguish(Location r) {
+	  FireType preFire = mapDescription[r.x][r.y].fireType;
 	  mapDescription[r.x][r.y].fireType = FireType.NONE;
+	  if (preFire == FireType.HEAVY) {
+		  hfOff = true;
+	  } else if (preFire == FireType.LIGHT) {
+		  lfOff = true;
+	  }
 	  return true;
   }
   
@@ -239,8 +248,8 @@ public class ForestModel extends GridWorldModel {
     }
     
     ////////////////77
-    r1.x = 5;
-    r1.y = 6;
+    //r1.x = 5;
+    //r1.y = 6;
     ///////////
 
     //lFireman.x = r1.x;

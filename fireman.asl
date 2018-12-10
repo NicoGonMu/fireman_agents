@@ -46,7 +46,7 @@ pos(lake,0,0).
   <- true.
 @p2
 +!proceed(fireman)
-  : heavy_fire//(Fire)
+  : heavy_fire
   <- !notify_plane(fireman);//(Fire);
      !explore(fireman).
 @p3

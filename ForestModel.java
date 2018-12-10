@@ -128,12 +128,13 @@ public class ForestModel extends GridWorldModel {
   }
   
   boolean moveRandom() {
-	int random = 0, x_random = 0, y_random = 0;
-	Location r1 = getAgPos(0);
-	
-	int x = r1.x, y = r1.y;
-	
+    int random = 0, xy_random, x_random = 0, y_random = 0;
+    Location r1 = getAgPos(0);
+    
+    int x = r1.x, y = r1.y;
+    
     random = (int) (Math.random()*2);
+    xy_random = (int) (Math.random()*2);
     
     while(x_random == 0 && y_random == 0) {
       x_random = (int)(Math.random()*3);
@@ -164,16 +165,34 @@ public class ForestModel extends GridWorldModel {
     }
     
     if((x == r1.x && y == r1.y)){
-      if(random == 0){
-        y--;
-        if(y < 0){
-          y = y + 2;
+      if(xy_random == 0){ // MODIFY X
+        if(random == 0) { // LEFT
+          x--;
+          if(x < 0)
+          {
+            x = x + 2;
+          }
+        }
+        else { //RIGHT
+          x++;
+          if(x == GSize)
+          {
+            x = x - 2;
+          }
         }
       }
-      else {
-        y++;
-        if(y == GSize) {
-          y = y - 2;
+      else { // MODIFICA Y
+        if(random == 0) { // BELOW
+          y--;
+          if(y < 0) {
+            y = y + 2;
+          }
+        }
+        else { // ABOVE
+          y++;
+          if(y == GSize) {
+            y = y - 2;
+          }
         }
       }
     }
@@ -206,7 +225,7 @@ public class ForestModel extends GridWorldModel {
     }
         
     setAgPos(0, r1); // move the agent in the grid
-	  
+      
     return true;
   }
 }

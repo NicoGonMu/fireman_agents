@@ -18,7 +18,7 @@ public class ForestEnv extends Environment {
   // Fire state literals
   public static final Literal hf = Literal.parseLiteral("heavy_fire");
   public static final Literal rh = Literal.parseLiteral("rescue_help");
-  public static final Literal et = Literal.parseLiteral("extinguish");
+  public static final Literal lf = Literal.parseLiteral("light_fire");
   
   ForestModel model; // the model of the grid
   
@@ -118,12 +118,6 @@ public class ForestEnv extends Environment {
       } catch (Exception e) {
         e.printStackTrace();
       }
-    } else if (action.equals(pr)) { // PROCEED
-      try {
-	    result = model.proceed(model.lFireman);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
     } else if (action.equals(ex)) { // EXTINGUISH
       Location dest = getDestination(action.getTerm(0).toString());
 
@@ -174,7 +168,7 @@ public class ForestEnv extends Environment {
       addPercept("fireman",rh);
 	}
 	else if (actionType == ForestModel.ActionType.EXTINGUISH) {
-      addPercept("fireman",et);
+      addPercept("fireman",lf);
 	}
 	/*else {
 		return false;

@@ -61,7 +61,8 @@ public class ForestModel extends GridWorldModel {
 	}
 	
 	// Set fire types and number of victims per cell
-	mapDescription[2][3].fireType = FireType.HEAVY;
+	mapDescription[5][6].fireType = FireType.HEAVY;
+	mapDescription[2][3].fireType = FireType.LIGHT;
 	mapDescription[2][3].numVictims = 2;
   }
 
@@ -79,21 +80,6 @@ public class ForestModel extends GridWorldModel {
     return true;
   }
   
-  // ES IGUAL QUE LA FUNCION ANTERIOR
-  
-  /*boolean go(Location dest) {
-    Location r1 = getAgPos(0);
-    if (r1.x < dest.x)    r1.x++;
-    else if (r1.x > dest.x)   r1.x--;
-    if (r1.y < dest.y)    r1.y++;
-    else if (r1.y > dest.y)   r1.y--;
-    setAgPos(0, r1); // move the agent in the grid
-        
-    // repaint the agent locations
-    //view.update(lFridge.x,lFridge.y);
-    view.update(lFireman.x,lFireman.y);
-    return true;
-  }*/
   
   boolean extinguish(Location r) {
 	  mapDescription[r.x][r.y].fireType = FireType.NONE;
@@ -139,10 +125,6 @@ public class ForestModel extends GridWorldModel {
     }*/
 	
 	return type;
-  }
-  
-  boolean proceed(Location p) {
-    return true;
   }
   
   boolean moveRandom() {

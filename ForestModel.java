@@ -24,7 +24,7 @@ public class ForestModel extends GridWorldModel {
   // Action description
   public static enum ActionType {
 	  NONE,
-	  PLANE, RESCUEANDHELP, EXTINGUISH//, RESCUE	  
+	  PLANE, RESCUEANDHELP, EXTINGUISH //, RESCUE	  
   }
   
   // Fire description
@@ -141,7 +141,7 @@ public class ForestModel extends GridWorldModel {
 	return type;
   }
   
-  boolean moveRandom(Location p) {
+  boolean moveRandom() {
 	int random = 0, x_random = 0, y_random = 0;
 	Location r1 = getAgPos(0);
 	
@@ -204,7 +204,17 @@ public class ForestModel extends GridWorldModel {
         r1.y = r1.y + 1;
       }
     }
-    else {
+    else if (x == GSize-1 && y == GSize-1){
+      if(x != r1.x && y != r1.y) {
+        r1.x = x;
+      }
+      else if (x != r1.x) {
+        r1.x = r1.x -1;
+      }
+      else {
+        r1.y = r1.y -1;
+      }
+    } else {
       r1.x = x;
       r1.y = y;
     }

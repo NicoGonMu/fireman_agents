@@ -14,10 +14,10 @@ pos(lake,0,0).
       !download_victim(fireman).
 
 @h2
-+!download_victim(fireman, P)
++!download_victim(fireman)
    : carrying_victim(fireman)
    <- !at(lake);
-   	  download_victim(P);
+   	  download_victim;
    	  -carrying_victim(fireman).
 
 @h3
@@ -52,7 +52,7 @@ pos(lake,0,0).
 @p3
 +!proceed(fireman)
   : rescue_help
-  <- !notify_fireman(fireman);
+  <- .broadcast(achieve, need_help(fireman));
      !load_victim(fireman).
 @p4
 +!proceed(fireman)
@@ -65,9 +65,9 @@ pos(lake,0,0).
    <- .send(plane, achieve, exists_fire(P)).
 
 @n2
-+!notify_fireman(fireman,P)
++!notify_fireman(P)
    : true
-   <- .send(fireman2, achieve, exists_fire(P)). //DUDA DE CÓMO ENVIAR A OTRO BOMBERO
+   <- .broadcast(achieve, need_help(P)). //DUDA DE CÓMO ENVIAR A OTRO BOMBERO
 
 @m1
 +!at(L) : at(L).
@@ -77,8 +77,9 @@ pos(lake,0,0).
            !at(L).
 
 @a1
-+fireman_alert(P)[source(fireman2)] : true
-   <- explore(P). //DUDA DE CÓMO ENVIAR A OTRO BOMBERO
++!need_help(P)[source(Ag)] : true
+   <- +need_help(P);
+      explore(fireman). 
 
 @a2
 +msg(M)[source(plane)] : true 

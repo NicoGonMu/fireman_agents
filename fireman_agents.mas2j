@@ -6,7 +6,6 @@ MAS fireman_agents {
 
     agents: plane;
             fireman;
-            supermarket agentArchClass SupermarketArch;
 
 	aslSourcePath:
 		"src/asl";

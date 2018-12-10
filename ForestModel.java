@@ -71,7 +71,7 @@ public class ForestModel extends GridWorldModel {
 	mapDescription[5][6].fireType = FireType.HEAVY;
 	mapDescription[6][6].fireType = FireType.LIGHT;
 	mapDescription[2][3].fireType = FireType.LIGHT;
-	mapDescription[2][3].numVictims = 2;
+	mapDescription[6][6].numVictims = 2;
   }
 
   boolean moveTowards(Location dest, int agent) {
@@ -112,15 +112,8 @@ public class ForestModel extends GridWorldModel {
   }
   
   boolean downloadVictim() {
-    Location r1 = getAgPos(0);
-    
-    if (carryingVictim && mapDescription[r1.x][r1.y].fireType == FireType.NONE) {
-	  mapDescription[r1.x][r1.y].numVictims -= 1;
 	  carryingVictim = false;
 	  return true;
-	} else {
-	  return false;
-	}
   }
   
   boolean loadWater() {

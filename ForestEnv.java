@@ -9,7 +9,7 @@ public class ForestEnv extends Environment {
   public static final Literal lw = Literal.parseLiteral("load_water");
   public static final Literal dw = Literal.parseLiteral("download_water");
   public static final Literal lv = Literal.parseLiteral("load(victim)");
-  public static final Literal dv = Literal.parseLiteral("download(victim)");
+  public static final Literal dv = Literal.parseLiteral("download_victim");
   public static final Literal pr = Literal.parseLiteral("proceed");
   //public static final Literal pr = Literal.parseLiteral("carrying_water(plane)");
   
@@ -53,7 +53,6 @@ public class ForestEnv extends Environment {
     addPercept(pos2);
     
     if(actionType == ForestModel.ActionType.PLANE){
-      System.out.println("FUEGOOOOOOOOO");
       addPercept("fireman", hf);
 	  Literal posHF = Literal.parseLiteral("pos(hfire," + lFireman.x + "," + lFireman.y + ")");
 	  addPercept(posHF);

@@ -42,7 +42,7 @@ public class ForestView extends GridWorldView {
 	    if(fmodel.lfOff) color = Color.GREEN;
 	    super.drawAgent(g, x, y, color, -1);
 		g.setColor(Color.black);
-		drawString(g, x, y, defaultFont, "HFire");
+		drawString(g, x, y, defaultFont, "LFire("+fmodel.mapDescription[fmodel.lLFire.x][fmodel.lLFire.y].numVictims+")");
 		break;
 	}
   }

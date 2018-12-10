@@ -11,6 +11,7 @@ pos(lake,0,0).
 +!load_victim(fireman)
    : not carrying_victim(fireman)
    <- +carrying_victim(fireman);
+      load_victim;
       !download_victim(fireman).
 
 @h2
@@ -47,7 +48,7 @@ pos(lake,0,0).
 @p2
 +!proceed(fireman)
   : heavy_fire
-  <- !notify_plane(fireman);//(Fire);
+  <- .send(plane, achieve, exists_fire(P))//(Fire);
      !explore(fireman).
 @p3
 +!proceed(fireman)
@@ -58,16 +59,6 @@ pos(lake,0,0).
 +!proceed(fireman)
   : light_fire
   <- extinguish(fireman).
-	 
-@n1
-+!notify_plane(P)
-   : true
-   <- .send(plane, achieve, exists_fire(P)).
-
-@n2
-+!notify_fireman(P)
-   : true
-   <- .broadcast(achieve, need_help(P)). //DUDA DE CÓMO ENVIAR A OTRO BOMBERO
 
 @m1
 +!at(L) : at(L).

@@ -6,9 +6,9 @@ import java.util.logging.Logger;
 public class ForestEnv extends Environment {
 
   // common literals
-  public static final Literal lw = Literal.parseLiteral("load_water");
-  public static final Literal dw = Literal.parseLiteral("download_water");
-  public static final Literal lv = Literal.parseLiteral("load(victim)");
+  public static final Literal lw = Literal.parseLiteral("load_water(plane)");
+  public static final Literal dw = Literal.parseLiteral("download_water(plane)");
+  public static final Literal lv = Literal.parseLiteral("load_victim");
   public static final Literal dv = Literal.parseLiteral("download_victim");
   public static final Literal pr = Literal.parseLiteral("proceed");
   //public static final Literal pr = Literal.parseLiteral("carrying_water(plane)");

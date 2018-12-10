@@ -101,14 +101,11 @@ public class ForestModel extends GridWorldModel {
   }
   
   boolean loadVictim() {
-    if (!carryingVictim) {
 	  Location r1 = getAgPos(0);
+	  System.out.println(r1);
 	  mapDescription[r1.x][r1.y].numVictims -= 1;
 	  carryingVictim = true;
 	  return true;
-	} else {
-	  return false;
-	}
   }
   
   boolean downloadVictim() {
